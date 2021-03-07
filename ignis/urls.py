@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('events/', include('events.urls')),
+    path('', include('events.urls')),
     # path('docs/', include_docs_urls(title="API Documentation"))
 ]
 if settings.DEBUG:
