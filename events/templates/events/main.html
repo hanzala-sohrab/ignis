@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}main page{% endblock title %}
+{% block content %}
+    <div class="ui grid">
+        <div class="eleven wide column" style="margin-right: auto; margin-left: auto">
+            {% for obj in qs %}
+                <div class="ui fluid card">
+                    <div class="ui fluid image">
+                        {% if obj.image %}
+                            <img src="{{obj.image.url}}" >
+                        {% endif %}
+                        <div class="content">
+                            <p> {{ obj.name }} </p>
+                            <div class="right floated">
+                                <form action="{% url 'events:like-event-view' %}" method="POST" class='like-form' id='{{obj.id}}'>
+                                    {% csrf_token %}
+                                    <input type="hidden" name="event_id" value={{obj.id}}>
+
+                                    <button type="submit" class="ui button like-btn{{obj.id}}">
+                                        {% if profile not in obj.is_liked.all %}
+                                            ♡
+                                        {% else %}
+                                            ❤️
+                                        {% endif %}
+                                    </button>
+{#                                    <div class="ui grid">#}
+{#                                        <div class="column">#}
+{#                                            <div class="like-count{{obj.id}}"> {{obj.num_likes}} </div>#}
+{#                                        </div>#}
+{#                                        <div class="column">#}
+{#                                            likes#}
+{#                                        </div>#}
+{#                                    </div>#}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    <script>
+        $( document ).ready(function() {
+            let display = false
+            $(".cmt_btn").click(function () {
+                if (display===false)
+                {
+                    $(this).next(".comment-box").show("slow");
+                    display=true
+                }
+                else
+                {
+                    $(this).next(".comment-box").hide("slow");
+                    display=false
+                }
+            });
+
+            $('.like-form').submit(function(e){
+                e.preventDefault()
+
+                const event_id = $(this).attr('id')
+
+                const likeText = $(`.like-btn${event_id}`).text()
+                const trim = $.trim(likeText)
+
+                const url = $(this).attr('action')
+
+                let res;
+                const likes = $(`.like-count${event_id}`).text()
+                const trimCount = parseInt(likes)
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: {
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                        'event_id':event_id,
+                    },
+                    success: function(response) {
+                        if(trim === '♡') {
+                            $(`.like-btn${event_id}`).text('❤')
+                            res = trimCount - 1
+                        } else {
+                            $(`.like-btn${event_id}`).text('♡')
+                            res = trimCount + 1
+                        }
+
+                        $(`.like-count${event_id}`).text(res)
+                    },
+                    error: function(response) {
+                        console.log('error', response)
+                    }
+                })
+            })
+        });
+    </script>
+{% endblock scripts %}

@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 
 
-class EventsConfig(AppConfig):
+class PostsConfig(AppConfig):
     name = 'events'
+    verbose_name = 'Events, Likes'

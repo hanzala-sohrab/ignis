@@ -13,16 +13,27 @@ class Event(models.Model):
         validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])],
         blank=True
     )
-    is_liked = models.ManyToManyField(Profile, blank=False, default=False, related_name='likes')
+    is_liked = models.ManyToManyField(Profile, blank=False, related_name='likes')
 
     def __str__(self):
-        return self.name
+        return str(self.name)
+
+    def num_likes(self):
+        return self.is_liked.all().count()
+
+
+LIKE_CHOICES = (
+    ('Like', 'Like'),
+    ('Unlike', 'Unlike'),
+)
 
 
 class Like(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    value = models.BooleanField(default=False)
+    value = models.CharField(choices=LIKE_CHOICES, max_length=8)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user}-{self.event}-{self.value}"
