@@ -29,9 +29,9 @@ An eventbrite like website where users can add their events, and also like and d
 For a user to add/like/dislike an event, he/she must log in first.
 
 ## Demo
-![Demo](./media/Peek%202021-03-08%2016-58.gif)
+![Demo](./Peek%202021-03-08%2016-58.gif)
 
 ## Final page
-![Page](./media/Peek%202021-03-08%2017-05.gif)
+![Page](./Peek%202021-03-08%2017-05.gif)
 
 This application uses [Ajax](https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX), so when a user likes/dislikes an event, the UI is upgraded without reloading the page, and the changes are reflected in the database.
